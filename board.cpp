@@ -119,7 +119,6 @@ void Board::discoverPlace(int disX,int disY){
         restart();
         discoverPlace(disX,disY);
     }
-    cout << nFound<<endl;
     if(nFound == (mX * mY) - nMines){
         won = true;
         cout << "CONGRATULATIONS... YOU WIN"<<endl;
@@ -127,7 +126,7 @@ void Board::discoverPlace(int disX,int disY){
 }
 
 void Board::flagPlace(int disX,int disY){
-    if(!FlagedMat[disX][disY]){
+    if(!FlagedMat[disX][disY] && !ShowedMat[disX][disY]){
     FlagedMat[disX][disY] = true;
     }else{
         FlagedMat[disX][disY] = false;
