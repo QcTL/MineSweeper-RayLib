@@ -6,6 +6,7 @@
 #include <utility>
 #include <fstream>
 #include "raylib.h"
+#include "camera.h"
 using namespace  std;
 
 class Board{
@@ -30,6 +31,7 @@ class Board{
 	public:
 		Board();
 		Board(int mX, int mY,int screenX, int screenY, int nMines);
+		~Board();
 		void discoverPlace(int disX, int disY);
 		void flagPlace(int disX, int disY);
 		
@@ -38,6 +40,8 @@ class Board{
 		void restart();
 		bool isAlive();
 		bool hasWon();
+		
+		void interactBoard(CameraGame* c);
 };
 
 

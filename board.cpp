@@ -3,30 +3,41 @@
 Board::Board(){
     //Non parameters inicialitzation => 20<-x, 20<-y
 
-    int rows = 20; int cols = 20;
-    (*this).mX = mX;
-    (*this).mY = mY;
+    (*this).mX = 20;
+    (*this).mY = 20;
     startTouch = true;
     alive = true;
     won = false;
 
     nFound = 0;
-    ValueMat = new int*[rows];
-    ShowedMat = new bool*[rows];
-    FlagedMat = new bool*[rows];
-    for (int i = 0; i < rows; ++i){
-        ValueMat[i] = new int[cols];
-        ShowedMat[i] = new bool[cols];
-        FlagedMat[i] = new bool[cols];
+    ValueMat = new int*[mX];
+    ShowedMat = new bool*[mX];
+    FlagedMat = new bool*[mX];
+    for (int i = 0; i < mX; ++i){
+        ValueMat[i] = new int[mY];
+        ShowedMat[i] = new bool[mY];
+        FlagedMat[i] = new bool[mY];
     }
      vector<pair<int,int>> vect1 = {{1,1},{0,1},{-1,1}, {1,0},{-1,0}, {1,-1},{0,-1},{-1,-1}};
      Surround=vect1;
 }
 
 
+Board::~Board() {
+	//Free each sub-array (row)
+	for(int i = 0; i< mX; ++i) {
+		delete[] ValueMat[i]; 
+		delete[] ShowedMat[i]; 
+		delete[] FlagedMat[i]; 		
+	}
+	delete[] ValueMat; 
+	delete[] ShowedMat; 
+	delete[] FlagedMat; ;  //Free the array of pointers
+}
+
+
 Board::Board(int mX, int mY,int screenX, int screenY, int nMines){
 
-    int rows = mX; int cols = mY;
     (*this).mX = mX;
     (*this).mY = mY;
     (*this).screenX = screenX;
@@ -38,14 +49,14 @@ Board::Board(int mX, int mY,int screenX, int screenY, int nMines){
 
     nFound = 0;
 
-    ValueMat = new int*[rows];
-    ShowedMat = new bool*[rows];
-    FlagedMat = new bool*[rows];
-    for (int i = 0; i < rows; ++i){
-        ValueMat[i] = new int[cols];
-        ShowedMat[i] = new bool[cols];
-        FlagedMat[i] = new bool[cols];
-        for (int j = 0; j < cols; ++j){
+    ValueMat = new int*[mX];
+    ShowedMat = new bool*[mX];
+    FlagedMat = new bool*[mX];
+    for (int i = 0; i < mX; ++i){
+        ValueMat[i] = new int[mY];
+        ShowedMat[i] = new bool[mY];
+        FlagedMat[i] = new bool[mY];
+        for (int j = 0; j < mY; ++j){
             ValueMat[i][j] = 0;
             ShowedMat[i][j] = false;
             FlagedMat[i][j] = false;
@@ -167,8 +178,6 @@ void Board::generateMines(){
     }
 }
 
-
-
 void Board::restart(){
     startTouch = true;
     nFound = 0;
@@ -188,4 +197,22 @@ bool Board::isAlive(){
 
 bool Board::hasWon(){
     return won;
+}
+
+
+void Board::interactBoard(CameraGame* c){
+    if (IsKeyPressed(KEY_R)){
+        restart();
+    }
+
+	if(isAlive() && !hasWon()){
+		Vector2 Mpos = c->getPositionClick();
+		if(IsMouseButtonDown(MOUSE_BUTTON_LEFT)){
+			discoverPlace(Mpos.x/(screenX/mX),Mpos.y/(screenY/mY));
+		}
+
+		if(IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)){
+			flagPlace(Mpos.x/(screenX/mX),Mpos.y/(screenY/mY));
+		}
+    }
 }
