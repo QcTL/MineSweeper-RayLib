@@ -36,7 +36,7 @@ int main(void)
         BeginMode2D(c.getcamera());  
         b.show();
         EndMode2D();
-
+        b.showGUI();
 
         EndDrawing();
     

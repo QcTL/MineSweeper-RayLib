@@ -17,7 +17,7 @@ class CameraGame{
 		Vector2 curMousePos;
 
 		int screenWidth;int screenHeight;
-		
+		float zoomCount;
 
 		Vector2 Vector2Add(Vector2 a, Vector2 b);
 		Vector2 Vector2Subtract(Vector2 a, Vector2 b);

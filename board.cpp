@@ -10,6 +10,7 @@ Board::Board(){
     won = false;
 
     nFound = 0;
+    nFlags = 0;
     ValueMat = new int*[mX];
     ShowedMat = new bool*[mX];
     FlagedMat = new bool*[mX];
@@ -48,6 +49,7 @@ Board::Board(int mX, int mY,int screenX, int screenY, int nMines){
     won = false;
 
     nFound = 0;
+    nFlags = 0;
 
     ValueMat = new int*[mX];
     ShowedMat = new bool*[mX];
@@ -86,7 +88,12 @@ void Board::show(){
             else if(ShowedMat[i][j] && ValueMat[i][j] != -1){
                 DrawRectangle(i * (screenX/mX), j* (screenY/mY),screenX/mX -1 ,screenY/mY -1,SKYBLUE);
                 if(ValueMat[i][j] != 0){
-                DrawText(to_string(ValueMat[i][j]).c_str(),i * (screenX/mX) + (screenX/mX/2), j* (screenY/mY), (screenX/mX) * 0.75f , BLACK);
+                    Vector2 sizeT = MeasureTextEx(GetFontDefault(), to_string(ValueMat[i][j]).c_str(), 20, 0);
+                    Vector2 sizeC = MeasureTextEx(GetFontDefault(), to_string(ValueMat[i][j]).c_str(), 25, 0);
+
+                    DrawText(to_string(ValueMat[i][j]).c_str(),i * (screenX/mX), j* (screenY/mY), 25 , BLACK);
+                    DrawText(to_string(ValueMat[i][j]).c_str(),i * (screenX/mX), j* (screenY/mY), 20 , getColorNumber(ValueMat[i][j]));
+
                 }
             }
             else if(ValueMat[i][j] == -1 && ShowedMat[i][j]){
@@ -97,12 +104,21 @@ void Board::show(){
             }
         }
     }
+ 
+   
 }
 
 
-void Board::discoverPlace(int disX,int disY){
+void Board::showGUI(){
+       //UI:
+     DrawText(to_string(nFlags).c_str(),20,0,40,BLACK);  
+}
 
+int Board::discoverPlace(int disX,int disY){
     //Grace 0 start Touch;
+    if(disX < 0 || disX >= mX || disY < 0 || disY >= mY){
+        return 1;
+    }
     if(startTouch && ValueMat[disX][disY] == 0 || !startTouch){
         startTouch = false;
         if(!FlagedMat[disX][disY] && !ShowedMat[disX][disY]){
@@ -134,14 +150,25 @@ void Board::discoverPlace(int disX,int disY){
         won = true;
         cout << "CONGRATULATIONS... YOU WIN"<<endl;
     }
+
+    return 0;
 }
 
-void Board::flagPlace(int disX,int disY){
+int Board::flagPlace(int disX,int disY){
+    if(disX < 0 || disX >= mX || disY < 0 || disY >= mY){
+        return 1;
+    }
+
+
     if(!FlagedMat[disX][disY] && !ShowedMat[disX][disY]){
     FlagedMat[disX][disY] = true;
-    }else{
+    nFlags++;
+    }else if(!ShowedMat[disX][disY]){
         FlagedMat[disX][disY] = false;
+        nFlags--;
     }
+
+    return 0;
 }
 
 
@@ -215,4 +242,35 @@ void Board::interactBoard(CameraGame* c){
 			flagPlace(Mpos.x/(screenX/mX),Mpos.y/(screenY/mY));
 		}
     }
+}
+
+Color Board::getColorNumber(int n){
+    switch(n){
+    case 1:
+        return BLUE;
+        break;
+    case 2:
+        return GREEN;
+        break;
+    case 3:
+        return RED;
+        break;
+    case 4:
+        return PURPLE;
+        break;
+    case 5:
+        return DARKPURPLE;
+        break;
+    case 6:
+        return SKYBLUE;
+        break;
+    case 7:
+        return DARKPURPLE;
+        break;
+    case 8:
+        return BLANK;
+        break;
+    }
+
+    return BEIGE;
 }

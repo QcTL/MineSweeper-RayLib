@@ -16,7 +16,7 @@ class Board{
 		bool ** FlagedMat;
 		int ** ValueMat; //Including mines 
 		int mX, mY;
-		int screenX, screenY;
+		float screenX, screenY;
 		vector<pair<int,int>> Surround;
 		int nMines;
 		bool startTouch;
@@ -25,6 +25,9 @@ class Board{
 		bool alive;
 		bool won;
 
+		int nFlags;
+
+
 		int setNumberBoard(int i, int j);
 		void cleanTables();
 		void generateMines();
@@ -32,10 +35,13 @@ class Board{
 		Board();
 		Board(int mX, int mY,int screenX, int screenY, int nMines);
 		~Board();
-		void discoverPlace(int disX, int disY);
-		void flagPlace(int disX, int disY);
+		int discoverPlace(int disX, int disY);
+		int flagPlace(int disX, int disY);
 		
 		void show();
+		void showGUI();
+
+		Color getColorNumber(int n);
 
 		void restart();
 		bool isAlive();
